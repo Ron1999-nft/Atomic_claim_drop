@@ -18,7 +18,7 @@ let userPrivateKey = 'Enter Your Private Key'//Private key in String
 let userAction = 'claimdrop' // what action does the user acts 
 let userReferAccount = 'atomicdropsx' // Account that carries out the contract
 let userClaimAccount = 'Enter Your Account name'// 'Enter the account name that received drop'  User Claim account in String
-let userClaimDropId = 746//Claim id in number  link(https://wax.atomichub.io/drops/746)
+let userClaimDropId = 1735//Claim id in number  link(https://wax.atomichub.io/drops/746)
 let userClaimAmount = 1//Claim amount in number
 let userIntendedDelphiMedian = 0 //Intended delphi median can be check at link(https://wax.bloks.io/account/delphioracle?loadContract=true&tab=Tables&table=datapoints&account=delphioracle&scope=waxpusd&limit=10) 
 let userCountry = "MY"//Country
