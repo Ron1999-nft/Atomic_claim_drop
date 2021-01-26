@@ -20,16 +20,19 @@ let userReferAccount = 'atomicdropsx' // Account that carries out the contract
 let userClaimAccount = 'Enter Your Account name'// 'Enter the account name that received drop'  User Claim account in String
 let userClaimDropId = 746//Claim id in number  link(https://wax.atomichub.io/drops/746)
 let userClaimAmount = 1//Claim amount in number
+let userIntendedDelphiMedian = 0 //Intended delphi median can be check at link(https://wax.bloks.io/account/delphioracle?loadContract=true&tab=Tables&table=datapoints&account=delphioracle&scope=waxpusd&limit=10) 
+let userCountry = "MY"//Country
+let userReferrer = 'atomichub' //Refer to atomuvhub
 //--------------------------------User Information Bar----------------------------------------------------//
 
 //--------------------------------Timer----------------------------------------------------//
 
-/*
 while (true){
     var time_now = new Date();
     // new Date(year, month, day, hours, minutes, seconds, milliseconds)
     // 0 is january
-    var buy_time = new Date(2021,0,25,11,43,0,0);
+    // Date(Year,month 0 = Jan,day,hour,minute,sec)
+    var buy_time = new Date(2021,0,26,9,35,0,0);
     console.log(time_now)
     if (time_now.getTime() == buy_time.getTime()){
       console.log(buy_time);
@@ -37,7 +40,6 @@ while (true){
       break
     }
   }
-*/
 //--------------------------------Timer----------------------------------------------------//
 
 //--------------------------------Main----------------------------------------------------//
@@ -65,10 +67,10 @@ api.transact({
     data: {
         claim_amount:userClaimAmount,
         claimer: userClaimAccount,
-        country: 'MY',
+        country: userCountry,
         drop_id: userClaimDropId,
-        intended_delphi_median:0,
-        referrer:'atomichub',
+        intended_delphi_median:userIntendedDelphiMedian,
+        referrer:userReferrer,
       },
     }]
   }, {

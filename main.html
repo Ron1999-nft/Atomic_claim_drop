@@ -1,0 +1,119 @@
+<!DOCTYPE html>   
+<html>   
+<head>  
+<meta name="viewport" content="width=device-width, initial-scale=1">  
+<title style="color:rgb(255, 255, 255)">Atomic Claim Drop</title>  
+<style> 
+
+Body {  
+  font-family: Calibri, Helvetica, sans-serif;  
+  background-color: rgb(192, 255, 250);
+}  
+button {   
+    background-color: #0720ff;   
+    width: 50%;  
+    color: rgb(255, 255, 255);   
+    padding: 15px;   
+    margin: 10px 0px;   
+    border: none;   
+    cursor: pointer;   
+        }   
+ form {   
+        border: 3px solid #f1f1f1;   
+    }   
+input[type=text] {   
+    width: 100%;   
+    margin: 8px 0;  
+    padding: 12px 20px;   
+    display: inline-block;   
+    border: 2px solid rgba(83, 128, 0, 0.541);   
+    box-sizing: border-box;   
+}  
+button:hover {   
+    opacity: 0.7;   
+    }   
+
+.container { 
+    width: 70%;  
+    padding: 20px;   
+    background-color: rgb(34, 216, 89);  
+    border-radius: 25px;
+}
+
+.input_text{ 
+    text-align: left;  
+}
+
+</style>   
+</head>    
+<body>    
+    <center><h1> Atomic Claim Drop</h1></center> 
+    <center><form>  
+        <div class="container"> 
+
+            <div class="input_text">
+                <label for="private_Key" >Private Key: </label>
+                <br>  
+                <input type="text" placeholder="Enter Private Key" name="private_Key" required>
+                <br>  
+            </div>
+
+            <div class="input_text">
+                <label for="account_Name">Claimer: </label>   
+                <br> 
+                <input type="text" placeholder="Enter Account Name" name="account_Name" required>  
+                <br> 
+            </div>
+
+            <div class="input_text">
+                <label for="drop_Id">Drop ID: </label>  
+                <br>  
+                <input type="text" placeholder="Enter Drop ID" name="drop_Id" required>  
+                <br> 
+            </div>
+
+            <div class="input_text">
+                <label for="claim_Amount">Claim Amount: </label> 
+                <br>   
+                <input type="text" placeholder="Enter Claim Amount" name="claim_Amount" required>  
+                <br> 
+            </div>
+
+            <div class="input_text">
+                <label for="drop_Id">Intended Delphi Median:</label>
+                <br>  
+                <a href= "https://wax.bloks.io/account/delphioracle?loadContract=true&tab=Tables&table=datapoints&account=delphioracle&scope=waxpusd&limit=10">View Delphi Median</a>  
+                <input type="text" placeholder="Enter Intended Delphi Median" name="intended_delphi_median" required>  
+                <br>
+            </div>
+
+            <div class="input_text">
+                <label for="drop_Id">Referrer: </label>  
+                <br>  
+                <input type="text" placeholder="Enter atomichub" name="referrer" required>  
+                <br>
+            </div>
+
+            <div class="input_text">
+                <label for="drop_Id">Country: </label>  
+                <br>  
+                <input type="text" placeholder="Enter MY for Malaysia" name="Country" required>  
+                <br>
+            </div>
+
+            <br>
+            <form action="/action_page.php">
+                <label for="date_&_Time">Execute Date and Time:</label>
+                <input type="datetime-local" id="date_&_Time" name="date_&_Time">
+                <input type="submit">
+            </form>
+
+            <br>
+            <button type="submit">Exeecute</button>
+        </div>
+    </form></center>     
+</body>
+<!--Script Tag for data&timepicker-->
+
+<!--Script Tag for data&timepicker-->
+</html>  
