@@ -34,6 +34,7 @@ const { TextDecoder, TextEncoder } = require('util'); //node only
 
 // file openning
 var fs = require('fs')
+const { exit } = require('process')
 
 fs.readFile('data.txt', (err, data) => {
 
@@ -64,16 +65,7 @@ fs.readFile('data.txt', (err, data) => {
   let day = parseInt(date[0])
   time = time[1].split(":")
   let hour = parseInt(time[0])
-  let minute = parseInt(time[1]) - 1
-  let second = 55
-  if ((minute) < 0) {
-    minute = 59
-    hour = hour - 1
-    if ((hour) < 0) {
-      day = day - 1
-      hour = 23
-    }
-  }
+  let minute = parseInt(time[1])
   userClaimAmount = parseInt(claimam[1])
   userIntendedDelphiMedian = parseInt(delph[1])
 
@@ -91,8 +83,11 @@ fs.readFile('data.txt', (err, data) => {
     // new Date(year, month, day, hours, minutes, seconds, milliseconds)
     // 0 is january
     // Date(Year,month 0 = Jan,day,hour,minute,sec)
-    var buy_time = new Date(year,month,day,hour,minute,second,0);
-    //console.log(buy_time.getFullYear()+'-'+(buy_time.getMonth()+1)+'-'+ buy_time.getDate()+ " & " + buy_time.getHours() + ":" + buy_time.getMinutes() + ":" + buy_time.getSeconds());
+    var buy_time = new Date(year,month,day,hour,minute,0,0);
+    buy_time = buy_time - 5000
+    buy_time = new Date(buy_time)
+    // console.log(buy_time.getFullYear()+'-'+(buy_time.getMonth()+1)+'-'+ buy_time.getDate()+ " & " + buy_time.getHours() + ":" + buy_time.getMinutes() + ":" + buy_time.getSeconds());
+    // exit()
     console.log(time_now.getFullYear()+'-'+(time_now.getMonth()+1)+'-'+ time_now.getDate()+ " & " + time_now.getHours() + ":" + time_now.getMinutes() + ":" + time_now.getSeconds());
     //exit()
     if (time_now.getTime() == buy_time.getTime()){
