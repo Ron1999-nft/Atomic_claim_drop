@@ -93,13 +93,12 @@ function mainBody(){
   const rpc = new JsonRpc('https://chain.wax.io', { fetch }); //required to read blockchain state
   const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() }); //required to submit transactions
 
-  
   //Timer
   // 13 second delay if Intended delphi median is needed
   var buy_time = new Date(year,month,day,hour,minute,0,0);
   if(respond=='Y'){
-    // 10 second delay
-    buy_time = buy_time - 10000
+    // 8.1 second delay
+    buy_time = buy_time - 8100
     buy_time = new Date(buy_time)
   }
   else if(respond=='N'){
@@ -111,12 +110,6 @@ function mainBody(){
 
   while (true){
     var time_now = new Date();
-    // new Date(year, month, day, hours, minutes, seconds, milliseconds)
-    // 0 is january
-    // Date(Year,month 0 = Jan,day,hour,minute,sec)
-    // console.log(buy_time.getFullYear()+'-'+(buy_time.getMonth()+1)+'-'+ buy_time.getDate()+ " & " + buy_time.getHours() + ":" + buy_time.getMinutes() + ":" + buy_time.getSeconds());
-    // exit()
-    console.log(time_now.getFullYear()+'-'+(time_now.getMonth()+1)+'-'+ time_now.getDate()+ " & " + time_now.getHours() + ":" + time_now.getMinutes() + ":" + time_now.getSeconds());
     //exit()
     if (time_now.getTime() >= buy_time.getTime()){
       break
