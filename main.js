@@ -7,15 +7,15 @@ npm install node-fetch
 
 */
 
-//--------------------------------Account requirement----------------------------------------------------//
+//Account requirement
+
 /*
 20 wax-Ram but in blok.io
 4 wax of stake CPU in blok.io
 */
-//--------------------------------Account requirement----------------------------------------------------//
+//Account requirement
 
-//--------------------------------User Information Bar(Required to be filled)----------------------------------------------------//
-
+//User Information Bar(Required to be filled)
 var userPrivateKey = "1"//Private key in String
 var userAction = 'claimdrop' // what action does the user acts 
 var userReferAccount = 'atomicdropsx' // Account that carries out the contract
@@ -30,14 +30,31 @@ var userReferrer = 'atomichub' //Refer to atomuvhub
 const { Api, JsonRpc } = require('eosjs');
 const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig');  // development only
 const fetch = require('node-fetch'); //node only
+const rpc = new JsonRpc('https://chain.wax.io', { fetch });
 const { TextDecoder, TextEncoder } = require('util'); //node only
 
 // file openning
 var fs = require('fs')
 const { exit } = require('process')
 
-fs.readFile('data.txt', (err, data) => {
+//Get Intended dewlphi Median
+async function getIntMedian(){
+  const data = await rpc.get_table_rows({
+      json: true,               // Get the response as json
+      code: 'delphioracle',      // Contract that we target
+      scope: 'waxpusd',         // Account that owns the data
+      table: 'datapoints',        // Table name
+      limit: 1,                // Maximum number of rows that we want to get
+      reverse: false,           // Optional: Get reversed data
+      show_payer: false          // Optional: Show ram payer
+  })
+  return data['rows'][0]['median']
+}
 
+// Ask USer about the drop
+
+function mainBody(){
+  fs.readFile('data.txt', (err, data) => {
   if (err) throw err;
   // file openning
   data = data.toString()
@@ -67,7 +84,7 @@ fs.readFile('data.txt', (err, data) => {
   let hour = parseInt(time[0])
   let minute = parseInt(time[1])
   userClaimAmount = parseInt(claimam[1])
-  userIntendedDelphiMedian = parseInt(delph[1])
+  respond = delph[1]
 
   // Api
 
@@ -76,51 +93,97 @@ fs.readFile('data.txt', (err, data) => {
   const rpc = new JsonRpc('https://chain.wax.io', { fetch }); //required to read blockchain state
   const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() }); //required to submit transactions
 
+  
+  //Timer
+  // 13 second delay if Intended delphi median is needed
+  var buy_time = new Date(year,month,day,hour,minute,0,0);
+  if(respond=='Y'){
+    // 10 second delay
+    buy_time = buy_time - 10000
+    buy_time = new Date(buy_time)
+  }
+  else if(respond=='N'){
+    // 6 second delay 
+    userIntendedDelphiMedian = 0
+    buy_time = buy_time - 6000
+    buy_time = new Date(buy_time)
+  }
 
-  //Time
   while (true){
     var time_now = new Date();
     // new Date(year, month, day, hours, minutes, seconds, milliseconds)
     // 0 is january
     // Date(Year,month 0 = Jan,day,hour,minute,sec)
-    var buy_time = new Date(year,month,day,hour,minute,0,0);
-    buy_time = buy_time - 5000
-    buy_time = new Date(buy_time)
     // console.log(buy_time.getFullYear()+'-'+(buy_time.getMonth()+1)+'-'+ buy_time.getDate()+ " & " + buy_time.getHours() + ":" + buy_time.getMinutes() + ":" + buy_time.getSeconds());
     // exit()
     console.log(time_now.getFullYear()+'-'+(time_now.getMonth()+1)+'-'+ time_now.getDate()+ " & " + time_now.getHours() + ":" + time_now.getMinutes() + ":" + time_now.getSeconds());
     //exit()
-    if (time_now.getTime() == buy_time.getTime()){
+    if (time_now.getTime() >= buy_time.getTime()){
       break
     }
   }
-
-  // claimdrop
-  api.transact({
-    actions: [{
-      account: userReferAccount,
-      name: userAction,
-      authorization: [{
-        actor: userClaimAccount,
-        permission: 'active',
-      }],
-      data: {
-          claim_amount:userClaimAmount,
-          claimer: userClaimAccount,
-          country: userCountry,
-          drop_id: userClaimDropId,
-          intended_delphi_median:userIntendedDelphiMedian,
-          referrer:userReferrer,
-        },
-      }]
-    }, {
-    blocksBehind: 3,
-    expireSeconds: 30,
-    }).then((err, res) =>{
-    if (err) console.log(err)
-    if (res) console.log(res)
+    
+  if(respond=='Y'){
+    (async () => {
+      userIntendedDelphiMedian = await getIntMedian()
+      api.transact({
+        actions: [{
+          account: userReferAccount,
+          name: userAction,
+          authorization: [{
+            actor: userClaimAccount,
+            permission: 'active',
+          }],
+          data: {
+              claim_amount:userClaimAmount,
+              claimer: userClaimAccount,
+              country: userCountry,
+              drop_id: userClaimDropId,
+              intended_delphi_median:userIntendedDelphiMedian,
+              referrer:userReferrer,
+            },
+          }]
+        }, {
+        blocksBehind: 3,
+        expireSeconds: 30,
+        }).then((err, res) =>{
+        if (err) console.log(err)
+        if (res) console.log(res)
+      })
+    })()
+  }
+  else if(respond=='N'){
+    // claimdrop
+    api.transact({
+      actions: [{
+        account: userReferAccount,
+        name: userAction,
+        authorization: [{
+          actor: userClaimAccount,
+          permission: 'active',
+        }],
+        data: {
+            claim_amount:userClaimAmount,
+            claimer: userClaimAccount,
+            country: userCountry,
+            drop_id: userClaimDropId,
+            intended_delphi_median:userIntendedDelphiMedian,
+            referrer:userReferrer,
+          },
+        }]
+      }, {
+      blocksBehind: 3,
+      expireSeconds: 30,
+      }).then((err, res) =>{
+      if (err) console.log(err)
+      if (res) console.log(res)
+    })
+  }
   })
-})
+}
+
+//Run Code
+mainBody()
 
 // atomichub api
 /*
