@@ -17,14 +17,14 @@ npm install node-fetch
 
 //User Information Bar(Required to be filled)
 var userPrivateKey = "1"//Private key in String
-var userAction = 'claimdrop' // what action does the user acts 
-var userReferAccount = 'atomicdropsx' // Account that carries out the contract
+const userAction = 'claimdrop' // what action does the user acts 
+const userReferAccount = 'atomicdropsx' // Account that carries out the contract
 var userClaimAccount// 'Enter the account name that received drop'  User Claim account in String
 var userClaimDropId //Claim id in number  link(https://wax.atomichub.io/drops/746)
 var userClaimAmount //Claim amount in number
 var userIntendedDelphiMedian //Intended delphi median can be check at link(https://wax.bloks.io/account/delphioracle?loadContract=true&tab=Tables&table=datapoints&account=delphioracle&scope=waxpusd&limit=10) 
-var userCountry = "MY"//Country
-var userReferrer = 'atomichub' //Refer to atomuvhub
+const userCountry = "MY"//Country
+const userReferrer = 'atomichub' //Refer to atomuvhub
 
 // atomichub api
 const { Api, JsonRpc } = require('eosjs');
@@ -87,7 +87,6 @@ function mainBody(){
   respond = delph[1]
 
   // Api
-
   const privateKeys = [userPrivateKey];
   const signatureProvider = new JsSignatureProvider(privateKeys);
   const rpc = new JsonRpc('https://chain.wax.io', { fetch }); //required to read blockchain state
@@ -172,11 +171,57 @@ function mainBody(){
       if (res) console.log(res)
     })
   }
+
   })
 }
 
 //Run Code
 mainBody()
+
+
+  // claimdrop
+  /*
+  for (let i = 0; i < 3; i++) {
+    var da = claim_drop(userReferAccount,userAction,userClaimAccount,userClaimAmount,userClaimAccount,userCountry,userClaimDropId,userIntendedDelphiMedian,userReferrer)
+    if (da == "no"){
+      console.log("aa")
+    }
+  }*/
+
+  /*
+  while (true){
+    try{
+      api.transact({
+        actions: [{
+          account: userReferAccount,
+          name: userAction,
+          authorization: [{
+            actor: userClaimAccount,
+            permission: 'active',
+          }],
+          data: {
+            claim_amount: userClaimAmount,
+            claimer: userClaimAccount,
+            country: userCountry,
+            drop_id: userClaimDropId,
+            intended_delphi_median: userIntendedDelphiMedian,
+            referrer: userReferrer,
+          },
+        }]
+      }, {
+        blocksBehind: 3,
+        expireSeconds: 30,
+      }).catch((res) => {
+        console.log(res)
+        throw("failed to claim drop")
+      })
+    }
+    catch(err){
+      break
+    }
+  }
+})
+*/
 
 // atomichub api
 /*
