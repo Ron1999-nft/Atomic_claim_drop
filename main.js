@@ -17,14 +17,14 @@ npm install node-fetch
 
 //User Information Bar(Required to be filled)
 var userPrivateKey = "1"//Private key in String
-const userAction = 'claimdrop' // what action does the user acts 
-const userReferAccount = 'atomicdropsx' // Account that carries out the contract
+var userAction = 'claimdrop' // what action does the user acts 
+var userReferAccount = 'atomicdropsx' // Account that carries out the contract
 var userClaimAccount// 'Enter the account name that received drop'  User Claim account in String
-var userClaimDropId //Claim id in number  link(https://wax.atomichub.io/drops/746)
+var userClaimDropId //Claim id in number  link(https://wax.atomichub.io/drops/2013)
 var userClaimAmount //Claim amount in number
 var userIntendedDelphiMedian //Intended delphi median can be check at link(https://wax.bloks.io/account/delphioracle?loadContract=true&tab=Tables&table=datapoints&account=delphioracle&scope=waxpusd&limit=10) 
-const userCountry = "MY"//Country
-const userReferrer = 'atomichub' //Refer to atomuvhub
+var userCountry = "MY"//Country
+var userReferrer = 'atomichub' //Refer to atomuvhub
 
 // atomichub api
 const { Api, JsonRpc } = require('eosjs');
@@ -38,21 +38,17 @@ var fs = require('fs')
 const { exit } = require('process')
 
 //Get Intended dewlphi Median
-async function getIntMedian(){
-  const data = await rpc.get_table_rows({
-      json: true,               // Get the response as json
-      code: 'delphioracle',      // Contract that we target
-      scope: 'waxpusd',         // Account that owns the data
-      table: 'datapoints',        // Table name
-      limit: 1,                // Maximum number of rows that we want to get
-      reverse: false,           // Optional: Get reversed data
-      show_payer: false          // Optional: Show ram payer
-  })
-  return data['rows'][0]['median']
-}
+const  getIntMedian= () => rpc.get_table_rows({
+  json: true,               // Get the response as json
+  code: 'delphioracle',      // Contract that we target
+  scope: 'waxpusd',         // Account that owns the data
+  table: 'datapoints',        // Table name
+  limit: 1,                // Maximum number of rows that we want to get
+  reverse: false,           // Optional: Get reversed data
+  show_payer: false          // Optional: Show ram payer
+})
 
-// Ask USer about the drop
-
+// Ask User about the drop
 function mainBody(){
   fs.readFile('data.txt', (err, data) => {
   if (err) throw err;
@@ -91,6 +87,38 @@ function mainBody(){
   const signatureProvider = new JsSignatureProvider(privateKeys);
   const rpc = new JsonRpc('https://chain.wax.io', { fetch }); //required to read blockchain state
   const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() }); //required to submit transactions
+  
+  // Reccurtion Claim
+  let Claim = () => {
+    api.transact({
+      actions: [{
+        account: userReferAccount,
+        name: userAction,
+        authorization: [{
+          actor: userClaimAccount,
+          permission: 'active',
+        }],
+        data: {
+            claim_amount: userClaimAmount,
+            claimer: userClaimAccount,
+            country: userCountry,
+            drop_id: userClaimDropId,
+            intended_delphi_median: userIntendedDelphiMedian,
+            referrer:userReferrer,
+          },
+        }]
+      }, {
+      blocksBehind: 3,
+      expireSeconds: 30,
+      }).then((res) =>{
+        console.log(res)
+        console.log('-----------------Sucess----------------------')
+      }).catch((err) =>{ 
+          console.log(err)
+          console.log('-----------------Fail----------------------')
+          Claim()
+        })
+  }
 
   //Timer
   // 13 second delay if Intended delphi median is needed
@@ -114,114 +142,22 @@ function mainBody(){
       break
     }
   }
-    
+
   if(respond=='Y'){
-    (async () => {
-      userIntendedDelphiMedian = await getIntMedian()
-      api.transact({
-        actions: [{
-          account: userReferAccount,
-          name: userAction,
-          authorization: [{
-            actor: userClaimAccount,
-            permission: 'active',
-          }],
-          data: {
-              claim_amount:userClaimAmount,
-              claimer: userClaimAccount,
-              country: userCountry,
-              drop_id: userClaimDropId,
-              intended_delphi_median:userIntendedDelphiMedian,
-              referrer:userReferrer,
-            },
-          }]
-        }, {
-        blocksBehind: 3,
-        expireSeconds: 30,
-        }).then((err, res) =>{
-        if (err) console.log(err)
-        if (res) console.log(res)
-      })
+    getIntMedian().then((data) =>{
+      userIntendedDelphiMedian = data['rows'][0]['median']
+      Claim()
     })()
   }
   else if(respond=='N'){
     // claimdrop
-    api.transact({
-      actions: [{
-        account: userReferAccount,
-        name: userAction,
-        authorization: [{
-          actor: userClaimAccount,
-          permission: 'active',
-        }],
-        data: {
-            claim_amount:userClaimAmount,
-            claimer: userClaimAccount,
-            country: userCountry,
-            drop_id: userClaimDropId,
-            intended_delphi_median:userIntendedDelphiMedian,
-            referrer:userReferrer,
-          },
-        }]
-      }, {
-      blocksBehind: 3,
-      expireSeconds: 30,
-      }).then((err, res) =>{
-      if (err) console.log(err)
-      if (res) console.log(res)
-    })
+    Claim()
   }
-
   })
 }
 
 //Run Code
 mainBody()
-
-
-  // claimdrop
-  /*
-  for (let i = 0; i < 3; i++) {
-    var da = claim_drop(userReferAccount,userAction,userClaimAccount,userClaimAmount,userClaimAccount,userCountry,userClaimDropId,userIntendedDelphiMedian,userReferrer)
-    if (da == "no"){
-      console.log("aa")
-    }
-  }*/
-
-  /*
-  while (true){
-    try{
-      api.transact({
-        actions: [{
-          account: userReferAccount,
-          name: userAction,
-          authorization: [{
-            actor: userClaimAccount,
-            permission: 'active',
-          }],
-          data: {
-            claim_amount: userClaimAmount,
-            claimer: userClaimAccount,
-            country: userCountry,
-            drop_id: userClaimDropId,
-            intended_delphi_median: userIntendedDelphiMedian,
-            referrer: userReferrer,
-          },
-        }]
-      }, {
-        blocksBehind: 3,
-        expireSeconds: 30,
-      }).catch((res) => {
-        console.log(res)
-        throw("failed to claim drop")
-      })
-    }
-    catch(err){
-      break
-    }
-  }
-})
-*/
 
 // atomichub api
 /*
