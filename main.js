@@ -20,7 +20,7 @@ var userPrivateKey = "1"//Private key in String
 var userAction = 'claimdrop' // what action does the user acts 
 var userReferAccount = 'atomicdropsx' // Account that carries out the contract
 var userClaimAccount// 'Enter the account name that received drop'  User Claim account in String
-var userClaimDropId //Claim id in number  link(https://wax.atomichub.io/drops/2013)
+var userClaimDropId //Claim id in number  link(https://wax.atomichub.io/drops/2004)
 var userClaimAmount //Claim amount in number
 var userIntendedDelphiMedian //Intended delphi median can be check at link(https://wax.bloks.io/account/delphioracle?loadContract=true&tab=Tables&table=datapoints&account=delphioracle&scope=waxpusd&limit=10) 
 var userCountry = "MY"//Country
@@ -150,7 +150,7 @@ function mainBody(){
         }).catch((err) =>{ 
             console.log(err)
             console.log('-----------------Fail----------------------')
-            ClaimWithInt
+            ClaimWithInt()
           })
     })()
   }
