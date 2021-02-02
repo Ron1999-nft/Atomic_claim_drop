@@ -88,7 +88,7 @@ function mainBody(){
   const rpc = new JsonRpc('https://chain.wax.io', { fetch }); //required to read blockchain state
   const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() }); //required to submit transactions
   
-  // Reccurtion Claim
+  // Reccurtion Claim Ith no Intended Delphi Median
   let Claim = () => {
     api.transact({
       actions: [{
@@ -120,6 +120,41 @@ function mainBody(){
         })
   }
 
+  // Reccurtion Claim With Intended Delphi Median
+  let ClaimWithInt = () =>{
+    getIntMedian().then((data) =>{
+      userIntendedDelphiMedian =  data['rows'][0]['median']
+      api.transact({
+        actions: [{
+          account: userReferAccount,
+          name: userAction,
+          authorization: [{
+            actor: userClaimAccount,
+            permission: 'active',
+          }],
+          data: {
+              claim_amount: userClaimAmount,
+              claimer: userClaimAccount,
+              country: userCountry,
+              drop_id: userClaimDropId,
+              intended_delphi_median: userIntendedDelphiMedian,
+              referrer:userReferrer,
+            },
+          }]
+        }, {
+        blocksBehind: 3,
+        expireSeconds: 30,
+        }).then((res) =>{
+          console.log(res)
+          console.log('-----------------Sucess----------------------')
+        }).catch((err) =>{ 
+            console.log(err)
+            console.log('-----------------Fail----------------------')
+            ClaimWithInt
+          })
+    })()
+  }
+  
   //Timer
   // 13 second delay if Intended delphi median is needed
   var buy_time = new Date(year,month,day,hour,minute,0,0);
@@ -144,10 +179,7 @@ function mainBody(){
   }
 
   if(respond=='Y'){
-    getIntMedian().then((data) =>{
-      userIntendedDelphiMedian = data['rows'][0]['median']
-      Claim()
-    })()
+    ClaimWithInt()
   }
   else if(respond=='N'){
     // claimdrop
