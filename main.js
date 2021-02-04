@@ -20,7 +20,7 @@ var userPrivateKey = "1"//Private key in String
 var userAction = 'claimdrop' // what action does the user acts 
 var userReferAccount = 'atomicdropsx' // Account that carries out the contract
 var userClaimAccount// 'Enter the account name that received drop'  User Claim account in String
-var userClaimDropId //Claim id in number  link(https://wax.atomichub.io/drops/2004)
+var userClaimDropId //Claim id in number  link(https://wax.atomichub.io/drops/2163)
 var userClaimAmount //Claim amount in number
 var userIntendedDelphiMedian //Intended delphi median can be check at link(https://wax.bloks.io/account/delphioracle?loadContract=true&tab=Tables&table=datapoints&account=delphioracle&scope=waxpusd&limit=10) 
 var userCountry = "MY"//Country
@@ -36,17 +36,6 @@ const { TextDecoder, TextEncoder } = require('util'); //node only
 // file openning
 var fs = require('fs')
 const { exit } = require('process')
-
-//Get Intended dewlphi Median
-const  getIntMedian= () => rpc.get_table_rows({
-  json: true,               // Get the response as json
-  code: 'delphioracle',      // Contract that we target
-  scope: 'waxpusd',         // Account that owns the data
-  table: 'datapoints',        // Table name
-  limit: 1,                // Maximum number of rows that we want to get
-  reverse: false,           // Optional: Get reversed data
-  show_payer: false          // Optional: Show ram payer
-})
 
 // Ask User about the drop
 function mainBody(){
@@ -88,6 +77,17 @@ function mainBody(){
   const rpc = new JsonRpc('https://chain.wax.io', { fetch }); //required to read blockchain state
   const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() }); //required to submit transactions
   
+  //Get Intended dewlphi Median
+  const  getIntMedian = () => rpc.get_table_rows({
+    json: true,               // Get the response as json
+    code: 'delphioracle',      // Contract that we target
+    scope: 'waxpusd',         // Account that owns the data
+    table: 'datapoints',        // Table name
+    limit: 1,                // Maximum number of rows that we want to get
+    reverse: false,           // Optional: Get reversed data
+    show_payer: false          // Optional: Show ram payer
+  })
+
   // Reccurtion Claim Ith no Intended Delphi Median
   let Claim = () => {
     api.transact({
@@ -152,7 +152,7 @@ function mainBody(){
             console.log('-----------------Fail----------------------')
             ClaimWithInt()
           })
-    })()
+    })
   }
   
   //Timer
@@ -169,6 +169,8 @@ function mainBody(){
     buy_time = buy_time - 6000
     buy_time = new Date(buy_time)
   }
+
+  console.log('Pending for Claim Drop ID: ' + userClaimDropId)
 
   while (true){
     var time_now = new Date();
